@@ -1,6 +1,6 @@
 {
 	"main": "./node_restarter",
-  "bin": "./node_restarter" },
+  "bin": "./node_restarter",
   "name": "node_restarter",
   "version": "1.0.0",
   "author": "Christopher Brown <io@henrian.com>",
