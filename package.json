@@ -2,7 +2,14 @@
 	"main": "./node_restarter",
   "bin": "./node_restarter",
   "name": "node_restarter",
-  "version": "1.0.0",
+  "description": "Kill/run command on changes to compiled files in or below the current directory.",
+  "homepage": "http://github.com/chbrown/node_restarter",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/chbrown/node_restarter.git"
+  },
+  "keywords": ["child_process", "restart", "reload", "changes", "development"],
+  "version": "0.9.1",
   "author": "Christopher Brown <io@henrian.com>",
   "engines": { "node": ">= 0.4.0" }
 }
