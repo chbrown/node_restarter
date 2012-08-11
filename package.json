@@ -9,7 +9,7 @@
     "url": "http://github.com/chbrown/node_restarter.git"
   },
   "keywords": ["child_process", "restart", "reload", "changes", "development"],
-  "version": "0.9.1",
+  "version": "0.9.2",
   "author": "Christopher Brown <io@henrian.com>",
   "engines": { "node": ">= 0.4.0" }
 }
