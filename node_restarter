@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// argv[0] is "node", argv[1] is the node_restarter path, and [2] is the name of the first command line argument
-var fs = require("fs"),
+// argv[0] is 'node', argv[1] is the node_restarter path, and [2] is the name of the first command line argument
+var fs = require('fs'),
   child_process = require('child_process'),
-  extensions = ['.js', '.mu'],
+  extensions = ['.js', '.mu', '.less'],
   extensions_filter = extensions.map(function(ext) { return '-name "*' + ext + '"'; }).join(' -o '),
   directories = ['.'];
 directories.push.apply(directories, process.argv.slice(3)); // weird (but standard) way to extend array
@@ -30,10 +30,8 @@ Restarter.prototype.start = function() {
   this.process.on('exit', function (code) {
     self.process = null;
     self.unwatchFiles();
-    // var last_restart = restart_times[restart_times.length - 1];
     var elapsed = new Date() - started;
     var wait = elapsed < 1000 ? 1000 : 0;
-    // wait = 0;
     setTimeout(ignition, wait);
   });
 };
@@ -41,7 +39,7 @@ Restarter.prototype.watchFiles = function() {
   var self = this;
   directories.forEach(function(dir) {
     child_process.exec('find ' + dir + ' ' + extensions_filter, function(error, stdout, stderr) {
-      var files = stdout.trim().split("\n");
+      var files = stdout.trim().split('\n');
       files.forEach(function(file) {
         self.files.push(file);
         fs.watchFile(file, {interval: 250}, function(curr, prev) {
