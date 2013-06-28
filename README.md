@@ -4,7 +4,8 @@ Just a simple script to monitor changes to compiled files in or below (uses `fin
 
 # Directions
 
-$ node_restarter superfierce_app.js
+    node_restarter superfierce_app.js
+    node_restarter node myapp.js --password yeehaw
 
 # License
 
