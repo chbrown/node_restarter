@@ -5,6 +5,7 @@
   "keywords": ["child_process", "restart", "reload", "changes", "development"],
   "homepage": "http://github.com/chbrown/node_restarter",
   "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "http://github.com/chbrown/node_restarter.git"
