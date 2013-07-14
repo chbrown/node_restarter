@@ -5,31 +5,31 @@ var async = require('async');
 var child_process = require('child_process');
 var fs = require('fs');
 var glob = require('glob');
+var minimatch = require('minimatch');
 
-function matchFiles(includes, excludes, callback) {
+var EXITS = {
+  SIGINT: 130,
+};
+
+function matchFiles(includes, exclude_pattern, callback) {
   // callback signature: (err, filepaths)
-  var files = {};
-  async.map(includes, glob, function(err1, include_files)  {
-    var includes = Array.prototype.concat.apply([], include_files);
-    async.map(excludes, glob, function(err2, exclude_files)  {
-      var excludes = Array.prototype.concat.apply([], exclude_files);
-      var includes_minus_excludes = _.difference(includes, excludes);
-      callback(err1 || err2, _.uniq(includes_minus_excludes));
-    });
+  // console.error('matchFiles(' + includes + ',' + exclude_pattern + ')');
+  var excludeFunction = minimatch.filter(exclude_pattern);
+  async.map(includes, glob, function(err, include_files)  {
+    var files = _.chain(include_files)
+      .flatten(true)
+      .uniq()
+      .reject(excludeFunction)
+      .value();
+    callback(err, files);
   });
-  // if (globpath[0] == '!') {
-  //   excludes.push(minimatch.filter(globpath.slice(1)));
-  // }
-  // else {
-  //   includes.push(globpath);
-  // }
 }
 
 function run(command, args, filepaths) {
   var child;
 
   var change = function(filepath) {
-    child.kill();
+    child.kill('SIGINT');
   };
   var change_2000 = _.debounce(change, 2000, true);
 
@@ -50,14 +50,21 @@ function run(command, args, filepaths) {
     child = child_process.spawn(command, args, {stdio: 'inherit'});
     child.on('exit', function(code, signal) {
       console.error('[%d] child exited. code: %d, signal: %s', Date.now(), code, signal);
-      start_1000();
+      // if a file was changed, code = EXITS.SIGINT, and we should restart immediately
+      if (code == EXITS.SIGINT) {
+        start();
+      }
+      else {
+        start_1000();
+      }
     });
   };
+  // start_1000 has immediate=false, so that it
   var start_1000 = _.debounce(start, 1000, false);
 
   process.on('exit', function (code, signal) {
     console.error('[%d] node_restarter exiting. code: %d, signal: %s', Date.now(), code, signal);
-    child.kill();
+    child.kill('SIGTERM');
     unwatch();
   });
 
@@ -67,22 +74,30 @@ function run(command, args, filepaths) {
 function main() {
   // don't use optimist because we can't tell optimist to keep
   //  everything flat that's not a specified option.
-  var includes = ['**/*.js', '**/*.mu'];
-  // specified on the command line by a ! in front of them.
-  var excludes = ['node_modules/**/*.js', 'node_modules/**/*.mu'];
 
-  // argv[0] = 'node', argv[1] = 'index.js', ...
-  var command = process.argv[2];
-  if (command[0] !== '/') {
-    command = './' + command;
+  // argv[0] = 'node', argv[1] = 'index.js', argv[2] = 'your-app.js', argv[3] = '--port', ...
+  var args = process.argv.slice(2);
+
+  // the last argument will always be the full command.
+  // if ONLY one argument is given, assume it is an executable script, and watch some default files
+  var includes = args.slice(0, -1);
+  var exclude_pattern = '';
+  if (!includes.length) {
+    includes = ['**/*.js', '**/*.mu'];
+    exclude_pattern = 'node_modules/**/*.{js,mu}';
   }
-  var args = process.argv.slice(3);
 
+  // should shlex this or something
+  var commands = _.last(args).split(' ');
+  if (commands.length == 1 && commands[0] !== '/') {
+    // assume that, if only one command is specified, that it is an executable with a hashbang
+    commands[0] = './' + commands[0];
+  }
 
-  matchFiles(includes, excludes, function(err, filepaths) {
+  matchFiles(includes, exclude_pattern, function(err, filepaths) {
     console.log('node_restarter watching %d files', filepaths.length);
     if (err) throw err;
-    run(command, args, filepaths);
+    run(commands[0], commands.slice(1), args, filepaths);
   });
 }
 
