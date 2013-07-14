@@ -1,7 +1,7 @@
 {
   "name": "node_restarter",
   "description": "Kill/run command on changes to compiled files in or below the current directory.",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "keywords": [
     "child_process",
     "restart",
