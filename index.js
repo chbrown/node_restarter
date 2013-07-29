@@ -83,6 +83,7 @@ function main() {
   var includes = args.slice(0, -1);
   var exclude_pattern = '';
   if (!includes.length) {
+    // assume node.js and mustache defaults
     includes = ['**/*.js', '**/*.mu'];
     exclude_pattern = 'node_modules/**/*.{js,mu}';
   }
@@ -96,8 +97,12 @@ function main() {
 
   matchFiles(includes, exclude_pattern, function(err, filepaths) {
     console.log('node_restarter watching %d files', filepaths.length);
-    if (err) throw err;
-    run(commands[0], commands.slice(1), args, filepaths);
+    if (err) {
+      throw err;
+    }
+    else {
+      run(commands[0], commands.slice(1), filepaths);
+    }
   });
 }
 
