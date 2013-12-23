@@ -78,6 +78,15 @@ function main() {
   // argv[0] = 'node', argv[1] = 'index.js', argv[2] = 'your-app.js', argv[3] = '--port', ...
   var args = process.argv.slice(2);
 
+  if (args.indexOf('--help') > -1) {
+    console.log([
+      "Example usages:",
+      "  node_restarter 'templates/**/*.html' 'static/*.js' 'static/*.js' '*.js' 'node server.js --port 8080'",
+      "  node_restarter server.js  # (server.js must have +x flags)"
+    ].join('\n'));
+    process.exit(0);
+  }
+
   // the last argument will always be the full command.
   // if ONLY one argument is given, assume it is an executable script, and watch some default files
   var includes = args.slice(0, -1);
