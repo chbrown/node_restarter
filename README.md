@@ -11,4 +11,4 @@ By default, it uses [node-glob](https://github.com/isaacs/node-glob) to find `*.
 
 ## License
 
-Copyright © 2012–2013 Christopher Brown. [MIT Licensed](LICENSE).
+Copyright © 2012-2013 Christopher Brown. [MIT Licensed](http://chbrown.github.io/licenses/MIT/#2012-2013).
