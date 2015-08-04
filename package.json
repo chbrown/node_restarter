@@ -3,6 +3,7 @@
   "description": "Kill/run command on changes to compiled files in or below the current directory.",
   "version": "0.10.3",
   "keywords": [
+    "node",
     "child_process",
     "restart",
     "reload",
@@ -10,20 +11,18 @@
     "development"
   ],
   "homepage": "http://github.com/chbrown/node_restarter",
-  "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
-  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "http://github.com/chbrown/node_restarter.git"
+    "url": "https://github.com/chbrown/node_restarter"
+  },
+  "bugs": "https://github.com/chbrown/node_restarter/issues",
+  "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "*",
+    "minimatch": "*"
   },
   "bin": {
-    "node_restarter": "index.js"
-  },
-  "dependencies": {
-    "async": "*",
-    "glob": "*",
-    "minimatch": "*",
-    "optimist": "*",
-    "underscore": "*"
+    "node_restarter": "bin/node_restarter"
   }
 }

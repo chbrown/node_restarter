@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+var node_restarter = require('../');
+
+// E.g., process.argv = ['node', '/usr/local/bin/node_restarter', 'npm start']
+var args = process.argv.slice(2);
+
+if (args.indexOf('--help') > -1) {
+  console.log([
+    "Example usages:",
+    "  node_restarter '**/*.js' 'templates/**/*.html' '!static/*.js' 'npm start'",
+    "  node_restarter ./server.js  # (server.js must have +x flags)"
+  ].join('\n'));
+  process.exit(0);
+}
+
+// should shlex this or something
+var command_args = args[args.length - 1].split(' ');
+var patterns = args.length > 1 ? args.slice(0, -1) : ['*']; // default to catch-all
+node_restarter.start(command_args[0], command_args.slice(1), patterns);
