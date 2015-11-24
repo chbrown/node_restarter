@@ -1,6 +1,5 @@
-/// <reference path="type_declarations/index.d.ts" />
-var child_process = require('child_process');
-var fs = require('fs');
+var child_process_1 = require('child_process');
+var fs_1 = require('fs');
 var minimatch = require('minimatch');
 var debounce_wait = parseInt(process.env.DEBOUNCE || '2000', 10);
 function testFilename(filename, minimatches) {
@@ -29,7 +28,7 @@ function start(command, args, patterns) {
     function startChild() {
         log("[" + timestamp() + "] child starting...\r");
         // "${command} ${args.join(' ')}"
-        child = child_process.spawn(command, args, { stdio: 'inherit' });
+        child = child_process_1.spawn(command, args, { stdio: 'inherit' });
         log("[" + timestamp() + "] child[pid=" + child.pid + "] started\n");
         child.on('exit', childExit);
     }
@@ -52,9 +51,10 @@ function start(command, args, patterns) {
         }
     }
     var minimatches = patterns.map(function (pattern) { return new minimatch.Minimatch(pattern, { flipNegate: true }); });
-    var fs_watcher = fs.watch(process.cwd(), {
+    // <any> hack is because node/node.d.ts is incorrect
+    var fs_watcher = fs_1.watch(process.cwd(), {
         persistent: false,
-        recursive: true
+        recursive: true,
     }, function (event, filename) {
         // event is either 'rename' or 'change'
         log("[" + timestamp() + "] file " + event + "d: " + filename + "\n");
@@ -63,7 +63,7 @@ function start(command, args, patterns) {
         }
     });
     process.on('exit', function (code, signal) {
-        log("node_restarter exiting. code: " + code + ", signal: " + signal);
+        log("node_restarter exiting. code: " + code + ", signal: " + signal + "\n");
         child.kill('SIGTERM');
         fs_watcher.close(); // unnecessary, probably
     });

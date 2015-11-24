@@ -1,8 +1,9 @@
-DTS := minimatch/minimatch node/node
+BIN := node_modules/.bin
 
-all: type_declarations
-type_declarations: $(DTS:%=type_declarations/DefinitelyTyped/%.d.ts)
+all: index.js
 
-type_declarations/DefinitelyTyped/%:
-	mkdir -p $(@D)
-	curl -s https://raw.githubusercontent.com/borisyankov/DefinitelyTyped/master/$* > $@
+$(BIN)/tsc:
+	npm install
+
+%.js: %.ts $(BIN)/tsc
+	$(BIN)/tsc

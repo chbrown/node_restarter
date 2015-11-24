@@ -13,7 +13,7 @@
   "homepage": "http://github.com/chbrown/node_restarter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chbrown/node_restarter"
+    "url": "https://github.com/chbrown/node_restarter.git"
   },
   "bugs": "https://github.com/chbrown/node_restarter/issues",
   "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
@@ -21,6 +21,10 @@
   "dependencies": {
     "lodash": "*",
     "minimatch": "*"
+  },
+  "devDependencies": {
+    "declarations": "*",
+    "typescript": "next"
   },
   "bin": {
     "node_restarter": "bin/node_restarter"

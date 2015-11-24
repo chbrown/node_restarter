@@ -1,7 +1,6 @@
-/// <reference path="type_declarations/index.d.ts" />
-import child_process = require('child_process');
-import fs = require('fs');
-import minimatch = require('minimatch');
+import {spawn} from 'child_process';
+import {watch} from 'fs';
+import * as minimatch from 'minimatch';
 
 const debounce_wait = parseInt(process.env.DEBOUNCE || '2000', 10)
 
@@ -33,7 +32,7 @@ export function start(command: string, args: string[], patterns: string[]) {
   function startChild() {
     log(`[${timestamp()}] child starting...\r`);
     // "${command} ${args.join(' ')}"
-    child = child_process.spawn(command, args, {stdio: 'inherit'});
+    child = spawn(command, args, {stdio: 'inherit'});
     log(`[${timestamp()}] child[pid=${child.pid}] started\n`);
     child.on('exit', childExit);
   }
@@ -59,9 +58,10 @@ export function start(command: string, args: string[], patterns: string[]) {
 
   var minimatches = patterns.map(pattern => new minimatch.Minimatch(pattern, {flipNegate: true}));
 
-  var fs_watcher = fs.watch(process.cwd(), {
+  // <any> hack is because node/node.d.ts is incorrect
+  var fs_watcher = watch(process.cwd(), <any>{
     persistent: false,
-    recursive: true
+    recursive: true,
   }, (event, filename) => {
     // event is either 'rename' or 'change'
     log(`[${timestamp()}] file ${event}d: ${filename}\n`);
